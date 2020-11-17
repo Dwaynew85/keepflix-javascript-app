@@ -8,8 +8,74 @@ body {
     line-height: 18px;
   }
 
-    .wrapper {
+header {
+    text-align: center;
+    border-bottom: 2px solid #d3d3d3;
+}
+#feed, #search {
+    clear: both;
+}
+
+.comment {
+    background-color: #fff;
+    border-radius: 25px 75px;
+    border: none;
+    margin: 0px;
+    padding: 10px;
+    padding-left: 100px;
+    margin-bottom: 5px;
+    width: auto;
+    position: relative;
+}
+.comment img, h6, p {
+    margin: 0px;
+}
+.prof_pic {
+    height: 50px;
+    width: 50px;
+}
+.movie-post {
+    background-color: #d3d3d3;
+    border-radius:25px 75px;
+    margin:5px;
+    padding:20px;
+    padding-left: 30px;
+}
+.sidebar, .user {
+    float: left;
+}
+.sidebar {
+    background: #d3d3d3;
+    border-radius:25px 75px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    padding-left: 5px;
+    display: inline-block;
+}
+.sidebar h4 {
+    display: block;
+    margin-bottom: -15px;
+}
+.sidebar li {
+    list-style-type: none;
+}
+.sidebar li a {
+    text-decoration: none;
+}
+.user {
+    float: right;
+    display: inline-block;
+}
+.user img {
+    border-radius: 25px 45px;
+    margin-bottom: -20px;
+}
+.user h4 {
+    margin-bottom: -5px;
+}
+.wrapper {
     background: #fff;
+    border-radius:25px 75px;
     -moz-box-shadow: 0 0 10px rgba(0,0,0,.3);
     -webkit-box-shadow: 0 0 10px rgba(0,0,0,.3);
     box-shadow: 0 0 10px rgba(0,0,0,.3);
@@ -20,5 +86,4 @@ body {
     position: absolute;
     left: 5%;
     right: 5%;
-    border-radius:25px 75px;
   }
