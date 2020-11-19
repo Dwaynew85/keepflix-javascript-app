@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <button>Fetch</button>
     <div class="wrapper">
         <header>
             <h1><a href="/">KeepFlix</a></h1>
@@ -35,8 +36,14 @@
         <div id="feed">
             <div class="movie-post">
                 <h1><a href="/movies/1">Avengers: Endgame&nbsp;</a></h1>
-                <h4><a href="/movies/1"><img src="https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_UX182_CR0,0,182,268_AL_.jpg"></a></h4>
-                <form class="button_to" method="post" action="/movies/1"><input type="hidden" name="_method" value="delete"><input class="remove-button" type="submit" value="Remove From My Movies"><input type="hidden" name="authenticity_token" value="aKcJi+X0vkoDQOBjQCKsieH30zPxD60tlHJdNcJOa0gOrF29W1WUDoBu1M0RrRrRltVr8wi4+LLwIaHaj8jY6Q=="></form>  
+                <h4><a href="/movies/1">
+                    <img src="https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_UX182_CR0,0,182,268_AL_.jpg"></a>
+                </h4>
+                <form class="button_to" method="post" action="/movies/1">
+                    <input type="hidden" name="_method" value="delete">
+                    <input class="remove-button" type="submit" value="Remove From My Movies">
+                    <input type="hidden" name="authenticity_token" value="aKcJi+X0vkoDQOBjQCKsieH30zPxD60tlHJdNcJOa0gOrF29W1WUDoBu1M0RrRrRltVr8wi4+LLwIaHaj8jY6Q==">
+                </form>  
                 <h3><strong>Rated </strong> PG-13</h3> 
                 <h3><strong>Action Adventure Drama</strong></h3>
                 <form action="/movies/1/comments" accept-charset="UTF-8" method="post">
@@ -239,7 +246,7 @@
               </form>
             </div>
         </div>        
-   
+   <script src="index.js"></script>
   <footer class="branding">
       <small>© 2020 <strong>KeepFlix</strong></small>
     </footer>
