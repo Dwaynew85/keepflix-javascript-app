@@ -1,6 +1,10 @@
 let info;
 let movies;
 let user;
+let users;
+fetch('http://localhost:3000/users/')
+    .then(response => response.json())
+    .then(json => users = json.data) 
 fetch('http://localhost:3000/')
 .then(response => response.json())
 .then(json => setInfo(json))
@@ -37,15 +41,12 @@ let addLi = (element) => {
 }
 
 function addMovie(movie) {
-    // create div with class 'movie-post'
     const movieDiv = document.createElement('div')
     const titleDiv = document.createElement('div') // DIV 1
     movieDiv.className = 'movie-post';
     titleDiv.className = 'title'
-    // h1 with anchor to movie title(or just regular title)
     const movieTitle = document.createElement('h1');
     movieTitle.innerHTML = movie.attributes.title;
-    // h4 anchor with img for movie poster
     const moviePoster = document.createElement('h4');
     const movieImage = document.createElement('img');
     movieImage.src = movie.attributes.image_url;
@@ -56,12 +57,9 @@ function addMovie(movie) {
     titleDiv.append(movieTitle, moviePoster);
     console.log(titleDiv)
 
-    // create dive with class 'movie-details
     const detailsDiv = document.createElement('div'); // DIV 2
     detailsDiv.className = 'details';
     const ul = document.createElement('ul');
-    // create ul for movie details
-    // create li to add movie detail to ul
     let movieLi = (info) => {
         let list = document.createElement('li')
         list.innerHTML = info;
@@ -80,9 +78,26 @@ function addMovie(movie) {
     // create div with movie comment info
     const commentDiv = document.createElement('div')
     commentDiv.className = 'comments'
-    // comments have class 'comment'
+    movie.attributes.comments.forEach(comment => createCommentDiv(comment));
     // create form for comment
 
 }
 
-
+// function to add comments to movie feed
+function createCommentDiv(comment) {
+    let user = users.find(x => parseInt(x.id) === comment.user_id).attributes
+    let comDiv = document.createElement('div')
+    let profPic = document.createElement('img')
+    profPic.className = 'comment'
+    profPic.src = user.pic_url
+    let h6 = document.createElement('h6');
+    h6.innerHTML = `${user.name}`;
+    let contentP = document.createElement('p');
+    contentP.innerHTML = comment.content;
+    let timeH6 = document.createElement('h6');
+    timeH6.innerHTML = new Date(comment.updated_at)
+    // let buttonH6 = document.createElement('h6')
+    // add edit and delete buttons for buttonH6
+    comDiv.append(profPic, h6, contentP, timeH6)
+    commentDiv.appendChild(comDiv)
+}
