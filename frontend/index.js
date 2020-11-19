@@ -32,7 +32,7 @@ function addUser(user) {
     const  userEmail = document.createElement('p');
     userEmail.innerHTML = user.email;
     userDiv.append(userImg, userName, userEmail);
-    document.getElementById('wrapper').appendChild(userDiv);
+    return document.getElementById('wrapper').appendChild(userDiv);
 }
 //function that adds movie by object
 let addLi = (element) => {
@@ -55,7 +55,6 @@ function addMovie(movie) {
     movieA.href = `/movies/${movie.id}`;
     moviePoster.appendChild(movieA);
     titleDiv.append(movieTitle, moviePoster);
-    console.log(titleDiv)
 
     const detailsDiv = document.createElement('div'); // DIV 2
     detailsDiv.className = 'details';
@@ -73,31 +72,32 @@ function addMovie(movie) {
     movieLi(movie.attributes.summary)
     movieLi(movie.attributes.trailer_link)    
     detailsDiv.appendChild(ul)
-    console.log(detailsDiv)
 
     // create div with movie comment info
     const commentDiv = document.createElement('div')
     commentDiv.className = 'comments'
+    function createCommentDiv(comment) {
+        let user = users.find(x => parseInt(x.id) === comment.user_id).attributes
+        let comDiv = document.createElement('div')
+        let profPic = document.createElement('img')
+        profPic.className = 'comment'
+        profPic.src = user.pic_url
+        let h6 = document.createElement('h6');
+        h6.innerHTML = `${user.name}`;
+        let contentP = document.createElement('p');
+        contentP.innerHTML = comment.content;
+        let timeH6 = document.createElement('h6');
+        timeH6.innerHTML = new Date(comment.updated_at)
+        // let buttonH6 = document.createElement('h6')
+        // add edit and delete buttons for buttonH6
+        comDiv.append(profPic, h6, contentP, timeH6)
+        commentDiv.appendChild(comDiv)
+    }
     movie.attributes.comments.forEach(comment => createCommentDiv(comment));
     // create form for comment
-
+    movieDiv.append(titleDiv, detailsDiv, commentDiv)
+    return document.getElementById('wrapper').appendChild(movieDiv);
 }
 
 // function to add comments to movie feed
-function createCommentDiv(comment) {
-    let user = users.find(x => parseInt(x.id) === comment.user_id).attributes
-    let comDiv = document.createElement('div')
-    let profPic = document.createElement('img')
-    profPic.className = 'comment'
-    profPic.src = user.pic_url
-    let h6 = document.createElement('h6');
-    h6.innerHTML = `${user.name}`;
-    let contentP = document.createElement('p');
-    contentP.innerHTML = comment.content;
-    let timeH6 = document.createElement('h6');
-    timeH6.innerHTML = new Date(comment.updated_at)
-    // let buttonH6 = document.createElement('h6')
-    // add edit and delete buttons for buttonH6
-    comDiv.append(profPic, h6, contentP, timeH6)
-    commentDiv.appendChild(comDiv)
-}
+
