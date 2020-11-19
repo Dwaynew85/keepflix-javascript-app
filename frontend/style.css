@@ -12,8 +12,16 @@ header {
     text-align: center;
     border-bottom: 2px solid #d3d3d3;
 }
-#feed, #search {
+div.details, div.title {
+    float: left;
+    width: 50%;
+    list-style-type: none;
+}
+#feed, #search, .comments {
     clear: both;
+}
+#top {
+
 }
 #wrapper {
     background: #fff;
@@ -44,6 +52,10 @@ header {
 .comment img, h6, p {
     margin: 0px;
 }
+.details {
+    word-wrap: break-word;
+    margin-bottom: -20px;
+}
 .prof_pic {
     height: 50px;
     width: 50px;
@@ -57,6 +69,7 @@ header {
 }
 .sidebar, .user {
     float: left;
+    width: 50;
 }
 .sidebar {
     background: #d3d3d3;
@@ -70,7 +83,7 @@ header {
     display: block;
     margin-bottom: -15px;
 }
-.sidebar li {
+.sidebar li, .details li {
     list-style-type: none;
 }
 .sidebar li a {
@@ -78,7 +91,6 @@ header {
 }
 .user {
     float: right;
-    display: inline-block;
 }
 .user img {
     border-radius: 25px 45px;
@@ -88,4 +100,38 @@ header {
 }
 .user h4 {
     margin-bottom: -5px;
+}
+
+/* modal */
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }

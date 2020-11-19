@@ -2,6 +2,7 @@ let info;
 let movies;
 let user;
 let users;
+let test;
 fetch('http://localhost:3000/users/')
     .then(response => response.json())
     .then(json => users = json.data) 
@@ -32,7 +33,7 @@ function addUser(user) {
     const  userEmail = document.createElement('p');
     userEmail.innerHTML = user.email;
     userDiv.append(userImg, userName, userEmail);
-    return document.getElementById('wrapper').appendChild(userDiv);
+    return document.getElementById('top').appendChild(userDiv);
 }
 //function that adds movie by object
 let addLi = (element) => {
@@ -77,13 +78,14 @@ function addMovie(movie) {
     const commentDiv = document.createElement('div')
     commentDiv.className = 'comments'
     function createCommentDiv(comment) {
-        let user = users.find(x => parseInt(x.id) === comment.user_id).attributes
+        let commenter = users.find(x => parseInt(x.id) === comment.user_id).attributes
         let comDiv = document.createElement('div')
         let profPic = document.createElement('img')
-        profPic.className = 'comment'
-        profPic.src = user.pic_url
+        comDiv.className = 'comment'
+        profPic.className = 'prof_pic'
+        profPic.src = commenter.pic_url
         let h6 = document.createElement('h6');
-        h6.innerHTML = `${user.name}`;
+        h6.innerHTML = `${commenter.name}`;
         let contentP = document.createElement('p');
         contentP.innerHTML = comment.content;
         let timeH6 = document.createElement('h6');
@@ -94,10 +96,49 @@ function addMovie(movie) {
         commentDiv.appendChild(comDiv)
     }
     movie.attributes.comments.forEach(comment => createCommentDiv(comment));
-    // create form for comment
-    movieDiv.append(titleDiv, detailsDiv, commentDiv)
-    return document.getElementById('wrapper').appendChild(movieDiv);
+    commentDiv.appendChild(commentForm(movie))
+    movieDiv.prepend(titleDiv, detailsDiv, commentDiv)
+    return document.getElementById('feed').appendChild(movieDiv);
 }
+function commentForm(movie) {
+    let form = document.createElement("form");
+    form.setAttribute("method", "POST");
+    form.setAttribute("action", `http://localhost:3000/movies/${movie.id}/comments`);
 
-// function to add comments to movie feed
+    let hide = document.createElement("input");
+    hide.setAttribute("type", "hidden");
+
+    let s = document.createElement("input");
+    s.setAttribute("placeholder", "Add Comment");
+    s.setAttribute("type", "text");
+    s.setAttribute("name", "comment[content]");
+    s.setAttribute("id", "comment_content");
+
+    let submit = document.createElement("input");
+    submit.setAttribute("type", "submit");
+    submit.setAttribute("name", "commit")
+    submit.setAttribute("value", "Create Comment")
+    submit.setAttribute("style", "display: none")
+    submit.setAttribute("data-disabled-with", "Create Comment")
+    function newComment(input) {
+        fetch(input.form.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({"movie_id": movie.id})
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(function(error) {
+            alert(error.message);
+        }); 
+    }
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        return newComment(s); // s.value is the submission content
+    });
+    form.append(hide, s, submit)
+    return form
+}
 
