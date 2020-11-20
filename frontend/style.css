@@ -17,11 +17,11 @@ div.details, div.title {
     width: 50%;
     list-style-type: none;
 }
-#feed, #search {
+#feed, #search, .comments {
     clear: both;
 }
 #top {
-    padding-bottom: 135px;
+
 }
 #wrapper {
     background: #fff;
@@ -37,7 +37,19 @@ div.details, div.title {
     left: 5%;
     right: 5%;
   }
-h6, p {
+
+.comment {
+    background-color: #fff;
+    border-radius: 25px 75px;
+    border: none;
+    margin: 0px;
+    padding: 10px;
+    padding-left: 100px;
+    margin-bottom: 5px;
+    width: auto;
+    position: relative;
+}
+.comment img, h6, p {
     margin: 0px;
 }
 .details {
@@ -89,3 +101,4 @@ h6, p {
 .user h4 {
     margin-bottom: -5px;
 }
+

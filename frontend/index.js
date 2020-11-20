@@ -1,6 +1,8 @@
 let info;
 let movies;
 let user;
+let users;
+let test;
 fetch('http://localhost:3000/users/')
     .then(response => response.json())
     .then(json => users = json.data) 
@@ -9,8 +11,9 @@ fetch('http://localhost:3000/')
 .then(json => setInfo(json))
 // set variables for fetch data
 let setInfo = (json) => {
-    movies = json[0].data,
-    user = new User(json[1].data.attributes)
+    info = json,
+    movies = info[0].data //.map(movie => movie.attributes)
+    user = new User(info[1].data.attributes)
 }
 class User {
     constructor(object) {
@@ -24,9 +27,9 @@ function addUser(user) {
     const userDiv = document.createElement('div');
     userDiv.className = 'user';
     const userImg = document.createElement('img');
-    userImg.setAttribute('src', `${user.pic}`);
+    userImg.setAttribute('src', user.pic);
     const userName = document.createElement('h4');
-    userName.innerHTML = `Welcome, ${user.name}!`;
+    userName.innerHTML = user.name;
     const  userEmail = document.createElement('p');
     userEmail.innerHTML = user.email;
     userDiv.append(userImg, userName, userEmail);
@@ -70,14 +73,72 @@ function addMovie(movie) {
     movieLi(movie.attributes.summary)
     movieLi(movie.attributes.trailer_link)    
     detailsDiv.appendChild(ul)
-   
-    movieDiv.prepend(titleDiv, detailsDiv, )
+
+    // create div with movie comment info
+    const commentDiv = document.createElement('div')
+    commentDiv.className = 'comments'
+    function createCommentDiv(comment) {
+        let commenter = users.find(x => parseInt(x.id) === comment.user_id).attributes
+        let comDiv = document.createElement('div')
+        let profPic = document.createElement('img')
+        comDiv.className = 'comment'
+        profPic.className = 'prof_pic'
+        profPic.src = commenter.pic_url
+        let h6 = document.createElement('h6');
+        h6.innerHTML = `${commenter.name}`;
+        let contentP = document.createElement('p');
+        contentP.innerHTML = comment.content;
+        let timeH6 = document.createElement('h6');
+        timeH6.innerHTML = new Date(comment.updated_at)
+        // let buttonH6 = document.createElement('h6')
+        // add edit and delete buttons for buttonH6
+        comDiv.append(profPic, h6, contentP, timeH6)
+        commentDiv.appendChild(comDiv)
+    }
+    movie.attributes.comments.forEach(comment => createCommentDiv(comment));
+    commentDiv.appendChild(commentForm(movie))
+    movieDiv.prepend(titleDiv, detailsDiv, commentDiv)
     return document.getElementById('feed').appendChild(movieDiv);
 }
+function commentForm(movie) {
+    let btn = document.createElement('button')
+    btn.setAttribute('id', "myBtn")
+    btn.innerHTML = "Comment"
+    let span = document.getElementsByClassName("close")[0]
+    let modal = document.getElementById('myModal')
+    let form = document.getElementById('comment_form')
+    form.action = `http://localhost:3000/movies/${movie.id}/comments`
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+    span.onclick = function() {
+        modal.style.display = "none"
+    }
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    
+    function newComment(input) {
+        fetch(input.form.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({"movie_id": movie.id})
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(function(error) {
+            alert(error.message);
+        }); 
+    }
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        console.log; // s.value is the submission content
+        modal.style.display = "none";
+    });
+    return btn
+}
 
-function addInfo(user, movies) {
-    addUser(user);
-    movies.forEach(movie => addMovie(movie));
-};
-
-addEventListener("DOMContentLoaded", addInfo(user, movies));
