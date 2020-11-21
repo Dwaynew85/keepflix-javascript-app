@@ -101,25 +101,25 @@ function addMovie(movie) {
     return document.getElementById('feed').appendChild(movieDiv);
 }
 function commentForm(movie) {
-    let btn = document.createElement('button')
-    btn.setAttribute('id', "myBtn")
-    btn.innerHTML = "Comment"
-    let span = document.getElementsByClassName("close")[0]
-    let modal = document.getElementById('myModal')
-    let form = document.getElementById('comment_form')
-    form.action = `http://localhost:3000/movies/${movie.id}/comments`
-    btn.onclick = function() {
-        modal.style.display = "block";
-    }
-    span.onclick = function() {
-        modal.style.display = "none"
-    }
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-    
+    let form = document.createElement("form");
+    form.setAttribute("method", "POST");
+    form.setAttribute("action", `http://localhost:3000/movies/${movie.id}/comments`);
+
+    let hide = document.createElement("input");
+    hide.setAttribute("type", "hidden");
+
+    let s = document.createElement("input");
+    s.setAttribute("placeholder", "Add Comment");
+    s.setAttribute("type", "text");
+    s.setAttribute("name", "comment[content]");
+    s.setAttribute("id", "comment_content");
+
+    let submit = document.createElement("input");
+    submit.setAttribute("type", "submit");
+    submit.setAttribute("name", "commit")
+    submit.setAttribute("value", "Create Comment")
+    submit.setAttribute("style", "display: none")
+    submit.setAttribute("data-disabled-with", "Create Comment")
     function newComment(input) {
         fetch(input.form.action, {
             method: 'POST',
@@ -136,9 +136,9 @@ function commentForm(movie) {
     }
     form.addEventListener("submit", function(e) {
         e.preventDefault();
-        console.log; // s.value is the submission content
-        modal.style.display = "none";
+        return newComment(s); // s.value is the submission content
     });
-    return btn
+    form.append(hide, s, submit)
+    return form
 }
 
