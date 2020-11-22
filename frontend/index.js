@@ -3,17 +3,21 @@ let movies;
 let user;
 let users;
 let test;
-fetch('http://localhost:3000/users/')
+document.addEventListener('DOMContentLoaded',function() {
+    fetch('http://localhost:3000/users/')
     .then(response => response.json())
-    .then(json => users = json.data) 
-fetch('http://localhost:3000/')
-.then(response => response.json())
-.then(json => setInfo(json))
+    .then(json => users = json.data); 
+    fetch('http://localhost:3000/')
+    .then(response => response.json())
+    .then(json => setInfo(json));
+})
 // set variables for fetch data
 let setInfo = (json) => {
     info = json,
     movies = info[0].data //.map(movie => movie.attributes)
     user = new User(info[1].data.attributes)
+    addUser(user); // adds user on page start ;)
+    movies.forEach(movie => addMovie(movie));
 }
 class User {
     constructor(object) {
@@ -29,7 +33,7 @@ function addUser(user) {
     const userImg = document.createElement('img');
     userImg.setAttribute('src', user.pic);
     const userName = document.createElement('h4');
-    userName.innerHTML = user.name;
+    userName.innerHTML = `Welcome, ${user.name}!`;
     const  userEmail = document.createElement('p');
     userEmail.innerHTML = user.email;
     userDiv.append(userImg, userName, userEmail);
@@ -126,7 +130,7 @@ function commentForm(movie) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({"movie_id": movie.id})
+            body: JSON.stringify({"content": input.value}) // CHANGE THIS!!!
         })
         .then(response => response.json())
         .then(data => console.log(data))
@@ -142,3 +146,19 @@ function commentForm(movie) {
     return form
 }
 
+// document.addEventListener('DOMContentLoaded', function() {
+//     addUser(user);
+//     movies.forEach(movie => addMovie(movie));
+// })
+
+function load(){ // FOR TESTING PURPOSES
+    document.getElementsByClassName('user')[0].remove()
+    addUser(user);
+    movies.forEach(movie => addMovie(movie));
+}
+
+let commentForms = document.querySelectorAll('#comment_content')
+commentForms.forEach(form => form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    console.log(e);
+}));
