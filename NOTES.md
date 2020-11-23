@@ -5,6 +5,7 @@
 [ ] Commenting saves a comment to back end.
 [ ] Comment saved to backend and returns it to frontend
 [ ] Frontend comment gets added to DOM
+[ ] Last piece of info in movie details needs to be an anchor
 
 
 

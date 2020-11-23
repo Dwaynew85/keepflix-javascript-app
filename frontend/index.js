@@ -48,8 +48,11 @@ let addLi = (element) => {
 function addMovie(movie) {
     const movieDiv = document.createElement('div')
     const titleDiv = document.createElement('div') // DIV 1
+    const commentFormDiv = document.createElement('div')
     movieDiv.className = 'movie-post';
-    titleDiv.className = 'title'
+    movieDiv.id = "movie_" + `${movie.id}`
+    titleDiv.className = 'title';
+    commentFormDiv.className = 'comment-form';
     const movieTitle = document.createElement('h1');
     movieTitle.innerHTML = movie.attributes.title;
     const moviePoster = document.createElement('h4');
@@ -81,27 +84,10 @@ function addMovie(movie) {
     // create div with movie comment info
     const commentDiv = document.createElement('div')
     commentDiv.className = 'comments'
-    function createCommentDiv(comment) {
-        let commenter = users.find(x => parseInt(x.id) === comment.user_id).attributes
-        let comDiv = document.createElement('div')
-        let profPic = document.createElement('img')
-        comDiv.className = 'comment'
-        profPic.className = 'prof_pic'
-        profPic.src = commenter.pic_url
-        let h6 = document.createElement('h6');
-        h6.innerHTML = `${commenter.name}`;
-        let contentP = document.createElement('p');
-        contentP.innerHTML = comment.content;
-        let timeH6 = document.createElement('h6');
-        timeH6.innerHTML = new Date(comment.updated_at)
-        // let buttonH6 = document.createElement('h6')
-        // add edit and delete buttons for buttonH6
-        comDiv.append(profPic, h6, contentP, timeH6)
-        commentDiv.appendChild(comDiv)
-    }
-    movie.attributes.comments.forEach(comment => createCommentDiv(comment));
-    commentDiv.appendChild(commentForm(movie))
-    movieDiv.prepend(titleDiv, detailsDiv, commentDiv)
+    
+    movie.attributes.comments.forEach(comment => createCommentDiv(comment, commentDiv));
+    commentFormDiv.appendChild(commentForm(movie))
+    movieDiv.prepend(titleDiv, detailsDiv, commentDiv, commentFormDiv)
     return document.getElementById('feed').appendChild(movieDiv);
 }
 function commentForm(movie) {
@@ -113,7 +99,7 @@ function commentForm(movie) {
     hide.setAttribute("type", "hidden");
 
     let s = document.createElement("input");
-    s.setAttribute("placeholder", "Add Comment");
+    s.setAttribute("placeholder", "Enter Comment");
     s.setAttribute("type", "text");
     s.setAttribute("name", "comment[content]");
     s.setAttribute("id", "comment_content");
@@ -129,14 +115,16 @@ function commentForm(movie) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                "Accept": "application/json"
             },
-            body: JSON.stringify({"content": input.value}) // CHANGE THIS!!!
+            body: JSON.stringify({"content": input.value})
         })
         .then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => test = data)
         .catch(function(error) {
             alert(error.message);
         }); 
+        input.value = '';
     }
     form.addEventListener("submit", function(e) {
         e.preventDefault();
@@ -146,15 +134,23 @@ function commentForm(movie) {
     return form
 }
 
-// document.addEventListener('DOMContentLoaded', function() {
-//     addUser(user);
-//     movies.forEach(movie => addMovie(movie));
-// })
-
-function load(){ // FOR TESTING PURPOSES
-    document.getElementsByClassName('user')[0].remove()
-    addUser(user);
-    movies.forEach(movie => addMovie(movie));
+function createCommentDiv(comment, parentDiv) {
+    let commenter = users.find(x => parseInt(x.id) === comment.user_id).attributes
+    let comDiv = document.createElement('div')
+    let profPic = document.createElement('img')
+    comDiv.className = 'comment'
+    profPic.className = 'prof_pic'
+    profPic.src = commenter.pic_url
+    let h6 = document.createElement('h6');
+    h6.innerHTML = `${commenter.name}`;
+    let contentP = document.createElement('p');
+    contentP.innerHTML = comment.content;
+    let timeH6 = document.createElement('h6');
+    timeH6.innerHTML = new Date(comment.updated_at) // needs to be simplified....eventually
+    // let buttonH6 = document.createElement('h6')
+    // add edit and delete buttons for buttonH6
+    comDiv.append(profPic, h6, contentP, timeH6)
+    parentDiv.appendChild(comDiv)
 }
 
 let commentForms = document.querySelectorAll('#comment_content')

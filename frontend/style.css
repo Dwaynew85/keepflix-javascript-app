@@ -17,11 +17,12 @@ div.details, div.title {
     width: 50%;
     list-style-type: none;
 }
+#comment_content {
+    border-radius:25px 75px;
+    text-align: center;
+}
 #feed, #search, .comments {
     clear: both;
-}
-#top {
-
 }
 #wrapper {
     background: #fff;
