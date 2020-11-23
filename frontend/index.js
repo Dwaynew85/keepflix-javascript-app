@@ -50,7 +50,6 @@ function addMovie(movie) {
     const titleDiv = document.createElement('div') // DIV 1
     const commentFormDiv = document.createElement('div')
     movieDiv.className = 'movie-post';
-    movieDiv.id = "movie_" + `${movie.id}`
     titleDiv.className = 'title';
     commentFormDiv.className = 'comment-form';
     const movieTitle = document.createElement('h1');
@@ -84,6 +83,7 @@ function addMovie(movie) {
     // create div with movie comment info
     const commentDiv = document.createElement('div')
     commentDiv.className = 'comments'
+    commentDiv.id = "movie_" + `${movie.id}`
     
     movie.attributes.comments.forEach(comment => createCommentDiv(comment, commentDiv));
     commentFormDiv.appendChild(commentForm(movie))
@@ -120,7 +120,7 @@ function commentForm(movie) {
             body: JSON.stringify({"content": input.value})
         })
         .then(response => response.json())
-        .then(data => test = data)
+        .then(data => addCommentData(data))
         .catch(function(error) {
             alert(error.message);
         }); 
@@ -135,6 +135,7 @@ function commentForm(movie) {
 }
 
 function createCommentDiv(comment, parentDiv) {
+    test = comment;
     let commenter = users.find(x => parseInt(x.id) === comment.user_id).attributes
     let comDiv = document.createElement('div')
     let profPic = document.createElement('img')
@@ -146,11 +147,17 @@ function createCommentDiv(comment, parentDiv) {
     let contentP = document.createElement('p');
     contentP.innerHTML = comment.content;
     let timeH6 = document.createElement('h6');
-    timeH6.innerHTML = new Date(comment.updated_at) // needs to be simplified....eventually
+    timeH6.innerHTML = new Date(comment.updated_at).toLocaleString()
     // let buttonH6 = document.createElement('h6')
     // add edit and delete buttons for buttonH6
     comDiv.append(profPic, h6, contentP, timeH6)
     parentDiv.appendChild(comDiv)
+}
+
+function addCommentData(info){
+    let comment = info.data.attributes;
+    let parentDiv = document.getElementById("movie_" + info.data.attributes.movie_id);
+    createCommentDiv(comment, parentDiv);
 }
 
 let commentForms = document.querySelectorAll('#comment_content')
