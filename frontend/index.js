@@ -21,6 +21,7 @@ let setInfo = (json) => {
 }
 class User {
     constructor(object) {
+        this.id = object.id;
         this.name = object.name;
         this.email = object.email;
         this.pic = object.pic_url;
@@ -135,7 +136,7 @@ function commentForm(movie) {
 }
 
 function createCommentDiv(comment, parentDiv) {
-    test = comment;
+    test = comment; // TEMPORARY
     let commenter = users.find(x => parseInt(x.id) === comment.user_id).attributes
     let comDiv = document.createElement('div')
     let profPic = document.createElement('img')
@@ -151,6 +152,9 @@ function createCommentDiv(comment, parentDiv) {
     // let buttonH6 = document.createElement('h6')
     // add edit and delete buttons for buttonH6
     comDiv.append(profPic, h6, contentP, timeH6)
+    if (comment.user_id === user.id) {
+        comDiv.append(addDelete(comment))
+    }
     parentDiv.appendChild(comDiv)
 }
 
@@ -165,3 +169,30 @@ commentForms.forEach(form => form.addEventListener('submit', function(e) {
     e.preventDefault();
     console.log(e);
 }));
+
+function addDelete(comment) {
+    let delForm = document.createElement('form');
+    let hidInp = document.createElement('input')
+    let subInp = document.createElement('input')           
+
+    Object.assign(delForm, {
+        className: 'button_to',
+        action: `http://localhost:3000/movies/${comment.movie_id}/comment/${comment.id}`,
+        method: 'DELETE',
+        onclick: function () {
+            alert('Clicked!')
+        }
+    })
+    Object.assign(hidInp, {
+        type: 'hidden',
+        name: '_method',
+        value: 'delete'
+    })
+    Object.assign(subInp, {
+        className: 'destroy',
+        type: 'submit',
+        value: "X"
+    })
+    delForm.append(hidInp, subInp)
+    return delForm
+}
