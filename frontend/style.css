@@ -46,16 +46,37 @@ div.details, div.title {
     margin: 0px;
     padding: 10px;
     padding-left: 100px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     width: auto;
     position: relative;
+    overflow: auto;
 }
 .comment img, h6, p {
     margin: 0px;
 }
+.destroy, .edit {
+    border: none;
+    background-color: #d3d3d3;
+    border-radius: 25px 75px;
+    float:left; 
+    display:inline; 
+    width: 49%;
+}
+.destroy {
+    color: red;
+}
+.destroy:hover, .edit:hover {
+    box-shadow: 1px 1px 1px 1px black;
+}
 .details {
     word-wrap: break-word;
     margin-bottom: -20px;
+}
+.edit {
+    color: blue;
+}
+.edit_form {
+    clear: both;
 }
 .prof_pic {
     height: 50px;

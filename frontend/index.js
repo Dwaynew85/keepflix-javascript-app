@@ -216,6 +216,7 @@ function addEdit(comment) {
 
 function editForm(comment) { 
     let form = document.createElement('form');
+    form.className = "edit_form"
     let hidInp = document.createElement('input');
     let textInp = document.createElement('input');
     let subInp = document.createElement('input');
