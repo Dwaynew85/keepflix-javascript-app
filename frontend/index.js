@@ -141,6 +141,7 @@ function createCommentDiv(comment, parentDiv) {
     let comDiv = document.createElement('div')
     let profPic = document.createElement('img')
     comDiv.className = 'comment'
+    comDiv.id = `comment_${comment.id}`
     profPic.className = 'prof_pic'
     profPic.src = commenter.pic_url
     let h6 = document.createElement('h6');
@@ -149,11 +150,9 @@ function createCommentDiv(comment, parentDiv) {
     contentP.innerHTML = comment.content;
     let timeH6 = document.createElement('h6');
     timeH6.innerHTML = new Date(comment.updated_at).toLocaleString()
-    // let buttonH6 = document.createElement('h6')
-    // add edit and delete buttons for buttonH6
     comDiv.append(profPic, h6, contentP, timeH6)
     if (comment.user_id === user.id) {
-        comDiv.append(addDelete(comment))
+        comDiv.append(addDelete(comment), addEdit(comment))
     }
     parentDiv.appendChild(comDiv)
 }
@@ -177,10 +176,21 @@ function addDelete(comment) {
 
     Object.assign(delForm, {
         className: 'button_to',
-        action: `http://localhost:3000/movies/${comment.movie_id}/comment/${comment.id}`,
+        action: `http://localhost:3000/movies/${comment.movie_id}/comments/${comment.id}`,
         method: 'DELETE',
-        onclick: function () {
-            alert('Clicked!')
+        onclick: function (e) {
+            e.preventDefault();
+            fetch(delForm.action, {
+                method: "delete",
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Accept": "application/json"
+                }
+            })
+            .catch(function(error) {
+                alert(error.message);
+            });
+            document.getElementById(`comment_${comment.id}`).remove()
         }
     })
     Object.assign(hidInp, {
@@ -195,4 +205,60 @@ function addDelete(comment) {
     })
     delForm.append(hidInp, subInp)
     return delForm
+}
+
+function addEdit(comment) { // adds edit button to update comment 
+    // create button
+    let btn = document.createElement('button')
+    // edit button has className for styling
+    btn.className = 'button_to'
+    // edit button has value equalling 'edit'
+    btn.innerHTML = "Edit"
+    // edit button has listener that transforms it into comment form
+    Object.assign(btn, {
+        className: 'button_to',
+        onclick: function (e) {
+            alert('Clicked Edit!')
+            console.log(btn.parentNode)
+        }
+    })
+    return btn
+}
+
+
+function editForm(comment) { // creates a form for updating comment
+    let editForm = document.createElement('form');
+    let hidInp = document.createElement('input');
+    let textInp = document.createElement('input');
+    let subInp = document.createElement('input');
+
+    Object.assign(editForm, {
+        action: `http://localhost:3000/movies/${comment.movie_id}/comment/${comment.id}`,
+        method: "PATCH"
+    });
+
+    Object.assign(hidInp, {
+        type: 'hidden',
+        name: '_method',
+        value: 'patch'
+    });
+
+    Object.assign(textInp, {
+        type: 'text',
+        placeholder: `${comment.content}`,
+        name: 'comment[content]',
+        id: 'comment_content',
+        onsubmit: function(e) {
+            alert(e)
+        }
+    });
+
+    Object.assign(subInp, {
+        type: 'submit',
+        name: 'commit',
+        value: 'Update Comment'
+    });
+// has listener that submits to backend, submits to DOM, and transforms form back into button
+    editForm.append(hidInp, textInp, subInp)    
+    return editForm
 }
