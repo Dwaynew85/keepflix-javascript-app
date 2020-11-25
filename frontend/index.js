@@ -11,12 +11,11 @@ document.addEventListener('DOMContentLoaded',function() {
     .then(response => response.json())
     .then(json => setInfo(json));
 })
-// set variables for fetch data
 let setInfo = (json) => {
     info = json,
-    movies = info[0].data //.map(movie => movie.attributes)
+    movies = info[0].data 
     user = new User(info[1].data.attributes)
-    addUser(user); // adds user on page start ;)
+    addUser(user); 
     movies.forEach(movie => addMovie(movie));
 }
 class User {
@@ -27,7 +26,6 @@ class User {
         this.pic = object.pic_url;
     }
 }
-// function takes in user data and adds it to DOM
 function addUser(user) {
     const userDiv = document.createElement('div');
     userDiv.className = 'user';
@@ -40,7 +38,6 @@ function addUser(user) {
     userDiv.append(userImg, userName, userEmail);
     return document.getElementById('top').appendChild(userDiv);
 }
-//function that adds movie by object
 let addLi = (element) => {
     const li = document.createElement('li')
     li.innerHTML = element;
@@ -48,7 +45,7 @@ let addLi = (element) => {
 
 function addMovie(movie) {
     const movieDiv = document.createElement('div')
-    const titleDiv = document.createElement('div') // DIV 1
+    const titleDiv = document.createElement('div')
     const commentFormDiv = document.createElement('div')
     movieDiv.className = 'movie-post';
     titleDiv.className = 'title';
@@ -64,7 +61,7 @@ function addMovie(movie) {
     moviePoster.appendChild(movieA);
     titleDiv.append(movieTitle, moviePoster);
 
-    const detailsDiv = document.createElement('div'); // DIV 2
+    const detailsDiv = document.createElement('div');
     detailsDiv.className = 'details';
     const ul = document.createElement('ul');
     let movieLi = (info) => {
@@ -81,7 +78,6 @@ function addMovie(movie) {
     movieLi(movie.attributes.trailer_link)    
     detailsDiv.appendChild(ul)
 
-    // create div with movie comment info
     const commentDiv = document.createElement('div')
     commentDiv.className = 'comments'
     commentDiv.id = "movie_" + `${movie.id}`
@@ -129,7 +125,7 @@ function commentForm(movie) {
     }
     form.addEventListener("submit", function(e) {
         e.preventDefault();
-        return newComment(s); // s.value is the submission content
+        return newComment(s); 
     });
     form.append(hide, s, submit)
     return form
@@ -151,7 +147,7 @@ function createCommentDiv(comment, parentDiv) {
     timeH6.innerHTML = new Date(comment.updated_at).toLocaleString()
     comDiv.append(profPic, h6, contentP, timeH6)
     if (comment.user_id === user.id) {
-        comDiv.append(addDelete(comment), addEdit(comment))
+        comDiv.append(addEdit(comment), addDelete(comment))
     }
     parentDiv.appendChild(comDiv)
 }
@@ -171,8 +167,7 @@ commentForms.forEach(form => form.addEventListener('submit', function(e) {
 function addDelete(comment) {
     let delForm = document.createElement('form');
     let hidInp = document.createElement('input')
-    let subInp = document.createElement('input')           
-
+    let subInp = document.createElement('input')
     Object.assign(delForm, {
         className: 'button_to',
         action: `http://localhost:3000/movies/${comment.movie_id}/comments/${comment.id}`,
@@ -206,16 +201,11 @@ function addDelete(comment) {
     return delForm
 }
 
-function addEdit(comment) { // adds edit button to update comment 
-    // create button
+function addEdit(comment) {
     let btn = document.createElement('button')
-    // edit button has className for styling
-    btn.className = 'button_to'
-    // edit button has value equalling 'edit'
     btn.innerHTML = "Edit"
-    // edit button has listener that transforms it into comment form
     Object.assign(btn, {
-        className: 'button_to',
+        className: 'edit',
         onclick: function (e) {
             btn.parentNode.append(editForm(comment));
             btn.remove();
@@ -224,24 +214,20 @@ function addEdit(comment) { // adds edit button to update comment
     return btn
 }
 
-
-function editForm(comment) { // creates a form for updating comment
+function editForm(comment) { 
     let form = document.createElement('form');
     let hidInp = document.createElement('input');
     let textInp = document.createElement('input');
     let subInp = document.createElement('input');
-
     Object.assign(form, {
         action: `http://localhost:3000/movies/${comment.movie_id}/comments/${comment.id}`,
         method: "PATCH"
     });
-
     Object.assign(hidInp, {
         type: 'hidden',
         name: '_method',
         value: 'patch'
     });
-
     Object.assign(textInp, {
         type: 'text',
         placeholder: `${comment.content}`,
@@ -264,14 +250,12 @@ function editForm(comment) { // creates a form for updating comment
             alert(error.message);
         });
     });
-
     Object.assign(subInp, {
         type: 'submit',
         name: 'commit',
         value: 'Update Comment',
         className: 'button_to'
     });
-// has listener that submits to backend, submits to DOM, and transforms form back into button
     form.append(hidInp, textInp, subInp)    
     return form
 }
