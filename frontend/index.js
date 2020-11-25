@@ -136,7 +136,6 @@ function commentForm(movie) {
 }
 
 function createCommentDiv(comment, parentDiv) {
-    test = comment; // TEMPORARY
     let commenter = users.find(x => parseInt(x.id) === comment.user_id).attributes
     let comDiv = document.createElement('div')
     let profPic = document.createElement('img')
@@ -218,8 +217,8 @@ function addEdit(comment) { // adds edit button to update comment
     Object.assign(btn, {
         className: 'button_to',
         onclick: function (e) {
-            alert('Clicked Edit!')
-            console.log(btn.parentNode)
+            btn.parentNode.append(editForm(comment));
+            btn.remove();
         }
     })
     return btn
@@ -227,13 +226,13 @@ function addEdit(comment) { // adds edit button to update comment
 
 
 function editForm(comment) { // creates a form for updating comment
-    let editForm = document.createElement('form');
+    let form = document.createElement('form');
     let hidInp = document.createElement('input');
     let textInp = document.createElement('input');
     let subInp = document.createElement('input');
 
-    Object.assign(editForm, {
-        action: `http://localhost:3000/movies/${comment.movie_id}/comment/${comment.id}`,
+    Object.assign(form, {
+        action: `http://localhost:3000/movies/${comment.movie_id}/comments/${comment.id}`,
         method: "PATCH"
     });
 
@@ -247,18 +246,39 @@ function editForm(comment) { // creates a form for updating comment
         type: 'text',
         placeholder: `${comment.content}`,
         name: 'comment[content]',
-        id: 'comment_content',
-        onsubmit: function(e) {
-            alert(e)
-        }
+        id: 'comment_content'
+    });
+    form.addEventListener('submit', function(e) {        
+        e.preventDefault();
+        fetch(form.action, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({"content": textInp.value})
+        })
+        .then(response => response.json())
+        .then(comment => editComment(form, comment)) 
+        .catch(function(error) {
+            alert(error.message);
+        });
     });
 
     Object.assign(subInp, {
         type: 'submit',
         name: 'commit',
-        value: 'Update Comment'
+        value: 'Update Comment',
+        className: 'button_to'
     });
 // has listener that submits to backend, submits to DOM, and transforms form back into button
-    editForm.append(hidInp, textInp, subInp)    
-    return editForm
+    form.append(hidInp, textInp, subInp)    
+    return form
+}
+
+function editComment(form, comment) {
+    form.parentElement.childNodes[2].innerHTML = comment.data.attributes.content;
+    form.reset();
+    form.parentElement.append(addEdit(comment));
+    form.remove();
 }
