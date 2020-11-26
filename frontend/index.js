@@ -2,7 +2,6 @@ let info;
 let movies;
 let user;
 let users;
-let test;
 document.addEventListener('DOMContentLoaded',function() {
     fetch('http://localhost:3000/users/')
     .then(response => response.json())
@@ -65,18 +64,23 @@ function addMovie(movie) {
     detailsDiv.className = 'details';
     const ul = document.createElement('ul');
     let movieLi = (info) => {
-        let list = document.createElement('li')
+        let list = document.createElement('h5')
         list.innerHTML = info;
         ul.appendChild(list);
     }
+    let anchor = document.createElement('a');
+    Object.assign(anchor, {
+       href: movie.attributes.trailer_link,
+       innerHTML: "View Trailer",
+       target: '_blank'
+    });
     movieLi(movie.attributes.rating)
     movieLi(movie.attributes.genres)
     movieLi(movie.attributes.release_date)
     movieLi(movie.attributes.runtime)
     movieLi(movie.attributes.stars)
-    movieLi(movie.attributes.summary)
-    movieLi(movie.attributes.trailer_link)    
-    detailsDiv.appendChild(ul)
+    movieLi(movie.attributes.summary)  
+    detailsDiv.append(anchor, ul)
 
     const commentDiv = document.createElement('div')
     commentDiv.className = 'comments'
@@ -96,17 +100,20 @@ function commentForm(movie) {
     hide.setAttribute("type", "hidden");
 
     let s = document.createElement("input");
-    s.setAttribute("placeholder", "Enter Comment");
-    s.setAttribute("type", "text");
-    s.setAttribute("name", "comment[content]");
-    s.setAttribute("id", "comment_content");
+    Object.assign(s, {
+        placeholder: "Enter Comment",
+        type: "text",
+        name: "comment[content]",
+        id: "comment_content"
+    });
 
     let submit = document.createElement("input");
-    submit.setAttribute("type", "submit");
-    submit.setAttribute("name", "commit")
-    submit.setAttribute("value", "Create Comment")
-    submit.setAttribute("style", "display: none")
-    submit.setAttribute("data-disabled-with", "Create Comment")
+    Object.assign(submit, {
+        type: "submit",
+        name: "commit",
+        value: "Create Comment",
+        style: "display: none",
+    });
     function newComment(input) {
         fetch(input.form.action, {
             method: 'POST',

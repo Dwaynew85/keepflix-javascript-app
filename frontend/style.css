@@ -60,7 +60,7 @@ div.details, div.title {
     border-radius: 25px 75px;
     float:left; 
     display:inline; 
-    width: 49%;
+    width: 35%;
 }
 .destroy {
     color: red;
