@@ -1,42 +1,46 @@
-let info;
-let movies;
-let user;
-let users;
 document.addEventListener('DOMContentLoaded',() => {
     fetch('http://localhost:3000/users/')
     .then(response => response.json())
-    .then(json => users = json.data); 
+    .then(json => json.data.forEach(user => {new User(user.attributes)})); 
     fetch('http://localhost:3000/')
     .then(response => response.json())
     .then(json => setInfo(json));
 })
+
 let setInfo = (json) => {
-    info = json,
-    movies = info[0].data 
-    user = new User(info[1].data.attributes)
-    addUser(user); 
+    const movies = json[0].data 
+    const user = new User(json[1].data.attributes)
+    User.current = user;
+    document.getElementById('top').appendChild(user.userDiv());
     movies.forEach(movie => addMovie(movie));
 }
+
 class User {
     constructor(object) {
         this.id = object.id;
         this.name = object.name;
         this.email = object.email;
         this.pic = object.pic_url;
+        User.all.push(this)
     }
+
+    userDiv = () => {
+        const userDiv = document.createElement('div');
+        userDiv.className = 'user';
+        const userImg = document.createElement('img');
+        userImg.setAttribute('src', this.pic);
+        const userName = document.createElement('h4');
+        userName.innerHTML = `Welcome, ${this.name}!`;
+        const  userEmail = document.createElement('p');
+        userEmail.innerHTML = this.email;
+        userDiv.append(userImg, userName, userEmail);
+        return userDiv;
+    }
+    
 }
-addUser =(user) => {
-    const userDiv = document.createElement('div');
-    userDiv.className = 'user';
-    const userImg = document.createElement('img');
-    userImg.setAttribute('src', user.pic);
-    const userName = document.createElement('h4');
-    userName.innerHTML = `Welcome, ${user.name}!`;
-    const  userEmail = document.createElement('p');
-    userEmail.innerHTML = user.email;
-    userDiv.append(userImg, userName, userEmail);
-    return document.getElementById('top').appendChild(userDiv);
-}
+User.current = null
+User.all = []
+
 let addLi = (element) => {
     const li = document.createElement('li')
     li.innerHTML = element;
@@ -68,12 +72,14 @@ addMovie = (movie) => {
         list.innerHTML = info;
         ul.appendChild(list);
     }
+
     let anchor = document.createElement('a');
     Object.assign(anchor, {
        href: movie.attributes.trailer_link,
        innerHTML: "View Trailer",
        target: '_blank'
     });
+
     movieLi(movie.attributes.rating)
     movieLi(movie.attributes.genres)
     movieLi(movie.attributes.release_date)
@@ -137,15 +143,16 @@ commentForm = (movie) => {
     form.append(hide, s, submit)
     return form
 }
-
+let cmt;
 createCommentDiv = (comment, parentDiv) => {
-    let commenter = users.find(x => parseInt(x.id) === comment.user_id).attributes
+    cmt = comment;
+    let commenter = User.all.find(x => parseInt(x.id) === comment.user_id)
     let comDiv = document.createElement('div')
     let profPic = document.createElement('img')
     comDiv.className = 'comment'
     comDiv.id = `comment_${comment.id}`
     profPic.className = 'prof_pic'
-    profPic.src = commenter.pic_url
+    profPic.src = commenter.pic
     let h6 = document.createElement('h6');
     h6.innerHTML = `${commenter.name}`;
     let contentP = document.createElement('p');
@@ -153,7 +160,7 @@ createCommentDiv = (comment, parentDiv) => {
     let timeH6 = document.createElement('h6');
     timeH6.innerHTML = new Date(comment.updated_at).toLocaleString()
     comDiv.append(profPic, h6, contentP, timeH6)
-    if (comment.user_id === user.id) {
+    if (comment.user_id === User.current.id) {
         comDiv.append(addEdit(comment), addDelete(comment))
     }
     parentDiv.appendChild(comDiv)
