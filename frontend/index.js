@@ -143,9 +143,8 @@ commentForm = (movie) => {
     form.append(hide, s, submit)
     return form
 }
-let cmt;
+
 createCommentDiv = (comment, parentDiv) => {
-    cmt = comment;
     let commenter = User.all.find(x => parseInt(x.id) === comment.user_id)
     let comDiv = document.createElement('div')
     let profPic = document.createElement('img')
