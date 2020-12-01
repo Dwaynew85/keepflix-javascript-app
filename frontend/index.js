@@ -2,7 +2,7 @@ let info;
 let movies;
 let user;
 let users;
-document.addEventListener('DOMContentLoaded',function() {
+document.addEventListener('DOMContentLoaded',() => {
     fetch('http://localhost:3000/users/')
     .then(response => response.json())
     .then(json => users = json.data); 
@@ -25,7 +25,7 @@ class User {
         this.pic = object.pic_url;
     }
 }
-function addUser(user) {
+addUser =(user) => {
     const userDiv = document.createElement('div');
     userDiv.className = 'user';
     const userImg = document.createElement('img');
@@ -42,7 +42,7 @@ let addLi = (element) => {
     li.innerHTML = element;
 }
 
-function addMovie(movie) {
+addMovie = (movie) => {
     const movieDiv = document.createElement('div')
     const titleDiv = document.createElement('div')
     const commentFormDiv = document.createElement('div')
@@ -91,7 +91,7 @@ function addMovie(movie) {
     movieDiv.prepend(titleDiv, detailsDiv, commentDiv, commentFormDiv)
     return document.getElementById('feed').appendChild(movieDiv);
 }
-function commentForm(movie) {
+commentForm = (movie) => {
     let form = document.createElement("form");
     form.setAttribute("method", "POST");
     form.setAttribute("action", `http://localhost:3000/movies/${movie.id}/comments`);
@@ -114,7 +114,7 @@ function commentForm(movie) {
         value: "Create Comment",
         style: "display: none",
     });
-    function newComment(input) {
+    newComment = (input) => {
         fetch(input.form.action, {
             method: 'POST',
             headers: {
@@ -125,12 +125,12 @@ function commentForm(movie) {
         })
         .then(response => response.json())
         .then(data => addCommentData(data))
-        .catch(function(error) {
+        .catch((error) => {
             alert(error.message);
         }); 
         input.value = '';
     }
-    form.addEventListener("submit", function(e) {
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
         return newComment(s); 
     });
@@ -138,7 +138,7 @@ function commentForm(movie) {
     return form
 }
 
-function createCommentDiv(comment, parentDiv) {
+createCommentDiv = (comment, parentDiv) => {
     let commenter = users.find(x => parseInt(x.id) === comment.user_id).attributes
     let comDiv = document.createElement('div')
     let profPic = document.createElement('img')
@@ -159,19 +159,19 @@ function createCommentDiv(comment, parentDiv) {
     parentDiv.appendChild(comDiv)
 }
 
-function addCommentData(info){
+addCommentData = (info) => {
     let comment = info.data.attributes;
     let parentDiv = document.getElementById("movie_" + info.data.attributes.movie_id);
     createCommentDiv(comment, parentDiv);
 }
 
 let commentForms = document.querySelectorAll('#comment_content')
-commentForms.forEach(form => form.addEventListener('submit', function(e) {
+commentForms.forEach(form => form.addEventListener('submit', (e) => {
     e.preventDefault();
     console.log(e);
 }));
 
-function addDelete(comment) {
+addDelete = (comment) => {
     let delForm = document.createElement('form');
     let hidInp = document.createElement('input')
     let subInp = document.createElement('input')
@@ -179,7 +179,7 @@ function addDelete(comment) {
         className: 'button_to',
         action: `http://localhost:3000/movies/${comment.movie_id}/comments/${comment.id}`,
         method: 'DELETE',
-        onclick: function (e) {
+        onclick: (e) => {
             e.preventDefault();
             fetch(delForm.action, {
                 method: "delete",
@@ -188,7 +188,7 @@ function addDelete(comment) {
                     "Accept": "application/json"
                 }
             })
-            .catch(function(error) {
+            .catch((error) => {
                 alert(error.message);
             });
             document.getElementById(`comment_${comment.id}`).remove()
@@ -208,12 +208,12 @@ function addDelete(comment) {
     return delForm
 }
 
-function addEdit(comment) {
+addEdit = (comment) => {
     let btn = document.createElement('button')
     btn.innerHTML = "Edit"
     Object.assign(btn, {
         className: 'edit',
-        onclick: function (e) {
+        onclick: (e) => {
             btn.parentNode.append(editForm(comment));
             btn.remove();
         }
@@ -221,7 +221,7 @@ function addEdit(comment) {
     return btn
 }
 
-function editForm(comment) { 
+editForm = (comment) => { 
     let form = document.createElement('form');
     form.className = "edit_form"
     let hidInp = document.createElement('input');
@@ -242,7 +242,7 @@ function editForm(comment) {
         name: 'comment[content]',
         id: 'comment_content'
     });
-    form.addEventListener('submit', function(e) {        
+    form.addEventListener('submit', (e) => {        
         e.preventDefault();
         fetch(form.action, {
             method: 'PATCH',
@@ -254,7 +254,7 @@ function editForm(comment) {
         })
         .then(response => response.json())
         .then(comment => editComment(form, comment)) 
-        .catch(function(error) {
+        .catch((error) => {
             alert(error.message);
         });
     });
@@ -268,7 +268,7 @@ function editForm(comment) {
     return form
 }
 
-function editComment(form, comment) {
+editComment = (form, comment) => {
     form.parentElement.childNodes[2].innerHTML = comment.data.attributes.content;
     form.reset();
     form.parentElement.append(addEdit(comment));
