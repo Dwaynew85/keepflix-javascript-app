@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded',() => {
 })
 
 let setInfo = (json) => {
-    const movies = json[0].data 
+    const movies = json[0].data.sort((a, b) => a.attributes.title.localeCompare(b.attributes.title));
     const user = new User(json[1].data.attributes)
     User.current = user;
     document.getElementById('top').appendChild(user.userDiv());
